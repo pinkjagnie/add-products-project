@@ -59,6 +59,17 @@ const AddProductForm = () => {
     console.log("8/ thumbnail " + enteredThumbnail);
     console.log("9/ images " + enteredImages);
 
+    // creating array of tags
+    let tagsArray;
+
+    const stringToTagsArray = (enteredTags) => {
+      tagsArray = enteredTags.split(", ");
+      return tagsArray;
+    };
+
+    stringToTagsArray(enteredTags);
+    console.log("7/ tags in array " + tagsArray);
+
     reset();
   }
 
@@ -209,6 +220,7 @@ const AddProductForm = () => {
               },
             })}
           />
+          <p className="italic text-sm">Seperate each tag by a comma</p>
           {errors.tags && (
             <p className="text-pink-900 italic">{errors.tags.message}</p>
           )}
