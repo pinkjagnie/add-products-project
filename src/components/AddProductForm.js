@@ -60,15 +60,16 @@ const AddProductForm = () => {
     console.log("9/ images " + enteredImages);
 
     // creating array of tags
-    let tagsArray;
-
     const stringToTagsArray = (enteredTags) => {
-      tagsArray = enteredTags.split(", ");
-      return tagsArray;
+      if (enteredTags.includes(",")) {
+        return enteredTags.split(", ");
+      } else if (enteredTags.includes(" ")) {
+        return enteredTags.split(" ");
+      }
     };
 
-    stringToTagsArray(enteredTags);
-    console.log("7/ tags in array " + tagsArray);
+    const tagsArray = stringToTagsArray(enteredTags);
+    console.log(tagsArray);
 
     reset();
   }
