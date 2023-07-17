@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React from "react";
 
 import * as Yup from "yup";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
+import axios from "axios";
 
 const AddProductForm = () => {
   const validation = Yup.object().shape({
@@ -31,15 +32,6 @@ const AddProductForm = () => {
   });
 
   async function onSubmit(data, e) {
-    const enteredTitle = data.title;
-    const enteredDescription = data.description;
-    const enteredPrice = data.price;
-    const enteredDiscountPercentage = data.discountPercentage;
-    const enteredStock = data.stock;
-    const enteredAuthor = data.author;
-    const enteredTags = data.tags;
-    const enteredThumbnail = data.thumbnail;
-    const enteredImages = data.images;
     const isChecked = data.selectCheckbox;
 
     if (!isChecked) {
@@ -48,16 +40,6 @@ const AddProductForm = () => {
       );
       return;
     }
-
-    console.log("1/ title " + enteredTitle);
-    console.log("2/ description " + enteredDescription);
-    console.log("3/ price " + enteredPrice);
-    console.log("4/ discount in % " + enteredDiscountPercentage);
-    console.log("5/ stock " + enteredStock);
-    console.log("6/ author " + enteredAuthor);
-    console.log("7/ tags " + enteredTags);
-    console.log("8/ thumbnail " + enteredThumbnail);
-    console.log("9/ images " + enteredImages);
 
     // creating array of tags
     const stringToTagsArray = (enteredTags) => {
@@ -68,8 +50,24 @@ const AddProductForm = () => {
       }
     };
 
-    const tagsArray = stringToTagsArray(enteredTags);
-    console.log(tagsArray);
+    const tagsArray = stringToTagsArray(data.tags);
+
+    const formData = new FormData();
+    formData.append("title", data.title);
+    formData.append("description", data.description);
+    formData.append("price", data.price);
+    formData.append("discountPercentage", data.discountPercentage);
+    formData.append("stock", data.stock);
+    formData.append("author", data.author);
+    formData.append("tags", tagsArray);
+    formData.append("thumbnail", data.thumbnail[0]);
+    formData.append("images", data.images[0]);
+
+    await axios.post("/api/add-product", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
 
     reset();
   }
@@ -232,8 +230,10 @@ const AddProductForm = () => {
             Thumbnail *
           </label>
           <input
-            type="text"
+            type="file"
             id="thumbnail"
+            accept=".xlsx,.xls,image/*"
+            // multiple
             className="w-[100%] border-b border-gray-900"
             {...register("thumbnail", {
               required: {
@@ -252,8 +252,10 @@ const AddProductForm = () => {
             Images *
           </label>
           <input
-            type="text"
+            type="file"
             id="images"
+            accept=".xlsx,.xls,image/*"
+            // multiple
             className="w-[100%] border-b border-gray-900"
             {...register("images", {
               required: {
